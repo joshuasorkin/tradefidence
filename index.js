@@ -1,7 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
-import {OpenAI} from 'openai';
+
+//local file imports
+import OpenAIUtility from './OpenAIUtility.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
