@@ -61,28 +61,6 @@ function updatePrompt_tokens(session,prompt_tokens,completion_tokens){
     session.prompt_tokens_total = prompt_tokens + completion_tokens;
 }
 
-async function submitMessage(session,prompt){
-    addMessage(session.messageHistory,'user',prompt);
-    session.save(err => {
-        if (err) {
-            console.error('Session save error:', err);
-        }
-    });
-    //generate response to user's prompt
-    //const result = await openAIUtility.chatGPTGenerate(req.session,call,personality);
-    const completion = await openai.chat.completions.create({
-        messages: session.messageHistory,
-        model: model
-    });
-    const result = completion.choices[0].message.content;
-    console.log("result from chatGPTGenerate:",{result});
-    //await call.updatePrompt_tokens(req.session,result.prompt_tokens,result.completion_tokens);
-    console.log("adding assistant message...");
-    addMessage(session.messageHistory,"assistant",result);
-    return result;
-}
-
-
 // Endpoint to handle prompt submissions
 app.post('/submit', async (req, res) => {
   try {
@@ -96,17 +74,15 @@ app.post('/submit', async (req, res) => {
         }
     });
     //generate response to user's prompt
-    //const result = await openAIUtility.chatGPTGenerate(req.session,call,personality);
     const completion = await openai.chat.completions.create({
         messages: req.session.messageHistory,
         model: model
     });
     const result = completion.choices[0].message.content;
     console.log("result from chatGPTGenerate:",{result});
-    //await call.updatePrompt_tokens(req.session,result.prompt_tokens,result.completion_tokens);
     console.log("adding assistant message...");
     addMessage(req.session.messageHistory,"assistant",result);
-    return result;
+    console.log("message added");
     res.json({ response: result });
   } catch (error) {
     console.error(error);

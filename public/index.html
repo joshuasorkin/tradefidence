@@ -68,7 +68,9 @@
         body: JSON.stringify({ prompt }),
       });
   
+      console.log("finished submit");
       if (response.ok) {
+        console.log("response ok");
         const data = await response.json();
         // Append assistant's response to chat history
         chatHistoryContainer.innerHTML += '<p><strong>Assistant:</strong> ' + data.response + '</p>';
