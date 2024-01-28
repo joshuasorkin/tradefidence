@@ -1,7 +1,7 @@
-// server.js
-require('dotenv').config();
-const express = require('express');
-const { Configuration, OpenAIApi } = require('openai');
+import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
+import { Configuration, OpenAIApi } from 'openai';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,7 +21,7 @@ app.use(express.json());
 // Endpoint to handle prompt submissions
 app.post('/submit', async (req, res) => {
   try {
-    const prompt = req.body.prompt;
+    const { prompt } = req.body;
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
