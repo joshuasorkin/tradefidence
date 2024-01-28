@@ -18,27 +18,35 @@
   </div>
 
   <script>
-    document.getElementById('uploadBtn').addEventListener('click', async () => {
-        const fileInput = document.getElementById('fileInput');
-        const file = fileInput.files[0];
+    document.getElementById('uploadBtn').addEventListener('click', () => {
+      // Trigger the file input click event
+      document.getElementById('fileInput').click();
+    });
 
-        if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
+    document.getElementById('fileInput').addEventListener('change', async () => {
+      const fileInput = document.getElementById('fileInput');
+      if (fileInput.files.length === 0) {
+        alert('Please select a file to upload.');
+        return; // Exit the function if no file is selected
+      }
+      const file = fileInput.files[0];
+      
+      // Construct the FormData and send the file as previously
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await fetch('/upload-csv', {
+        method: 'POST',
+        body: formData, // No need to set Content-Type header for FormData
+      });
 
-            const response = await fetch('/upload-csv', {
-            method: 'POST',
-            body: formData, // No need to set Content-Type header for FormData
-            });
-
-            if (response.ok) {
-            const data = await response.json();
-            // Handle response here (e.g., display it in the chat history)
-            console.log('CSV uploaded and processed:', data);
-            } else {
-            console.error('Error uploading and processing CSV.');
-            }
-        }
+      if (response.ok) {
+        const data = await response.json();
+        // Handle response here (e.g., display it in the chat history)
+        console.log('CSV uploaded and processed:', data);
+      } else {
+        console.error('Error uploading and processing CSV.');
+      }
     });
 
     document.getElementById('submitBtn').addEventListener('click', async () => {
