@@ -68,7 +68,7 @@ app.post('/submit', async (req, res) => {
     //const result = await openAIUtility.chatGPTGenerate(req.session,call,personality);
     response = await openai.chat.completions.create({
         messages: req.session.messageHistory,
-        model: this.model,
+        model: model,
         max_tokens: maxTokens
     });
     const result = completion.choices[0].message.content;
@@ -83,6 +83,9 @@ app.post('/submit', async (req, res) => {
     res.status(500).send('Error processing your request');
   }
 });
+
+// Serve static files from 'public' directory
+app.use(express.static('public'));
 
 app.get('/', (req,res) => {
     if (!req.session.initialized){
@@ -101,8 +104,7 @@ app.get('/', (req,res) => {
     }
 });
 
-// Serve static files from 'public' directory
-app.use(express.static('public'));
+
 
 // Start the server
 app.listen(port, () => {
