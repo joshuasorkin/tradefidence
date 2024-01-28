@@ -5,6 +5,8 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import path from 'path';
 import OpenAI from 'openai';
+import fileUpload from 'express-fileupload';
+app.use(fileUpload());
 
 import { fileURLToPath } from 'url';
 
