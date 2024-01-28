@@ -66,7 +66,7 @@ app.post('/submit', async (req, res) => {
     addMessage(req.session.messageHistory,'user',prompt);
     //generate response to user's prompt
     //const result = await openAIUtility.chatGPTGenerate(req.session,call,personality);
-    response = await openai.chat.completions.create({
+    const response = await openai.chat.completions.create({
         messages: req.session.messageHistory,
         model: model
     });
@@ -75,8 +75,7 @@ app.post('/submit', async (req, res) => {
     //await call.updatePrompt_tokens(req.session,result.prompt_tokens,result.completion_tokens);
     console.log("adding assistant message...");
     addMessage(req.session.messageHistory,"assistant",result);
-    const response = result;
-    res.json({ response: response });
+    res.json({ response: result });
   } catch (error) {
     console.error(error);
     res.status(500).send('Error processing your request');
