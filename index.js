@@ -4,10 +4,16 @@ import express from 'express';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import path from 'path';
-
+import OpenAI from 'openai';
 
 //local file imports
 import OpenAIUtility from './OpenAIUtility.js';
+
+
+const openai = new OpenAI({
+    apiKey:process.env.OPENAI_API_KEY
+});
+const model = 'gpt-3.5-turbo';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -36,16 +42,41 @@ addMessage(messages,role,message){
     messages.push(newElement);
 }
 
+//todo: bundle both of these session updates into a single operation
+updatePrompt_tokens(session,prompt_tokens,completion_tokens){
+    //based on the prompt_tokens value returned by chatGPT,
+    //calculate the token count of user's most recent prompt as:
+    //prompt_tokens_mostRecent = prompt_tokens - prompt_tokens_total
+    console.log("updatePrompt_tokens:");
+    console.log("prompt_tokens calculated by openAI",prompt_tokens,"prompt_tokens_total:",session.prompt_tokens_total);
+    const prompt_tokens_mostRecent = prompt_tokens - session.prompt_tokens_total;
+    //update prompt_tokens in session
+    console.log("updating local message array, most recent user message has prompt_tokens:",prompt_tokens_mostRecent);
+    const currentMessageIndex = session.messageHistory.length-1;
+    session.messageHistory[currentMessageIndex].token_count = prompt_tokens_mostRecent;
+    //then we update prompt_tokens_total with the latest count as:
+    //prompt_tokens_total = prompt_tokens + completion_tokens
+    session.prompt_tokens_total = prompt_tokens + completion_tokens;
+}
+
 // Endpoint to handle prompt submissions
 app.post('/submit', async (req, res) => {
   try {
     const { prompt } = req.body;
+    addMessage(req.session.messageHistory,'user',prompt);
     //generate response to user's prompt
-    const result = await openAIUtility.chatGPTGenerate(call,personality);
+    //const result = await openAIUtility.chatGPTGenerate(req.session,call,personality);
+    response = await openai.chat.completions.create({
+        messages: req.messageHistory,
+        model: this.model,
+        max_tokens: maxTokens
+    });
+    const result = completion.choices[0].message.content;
     console.log("result from chatGPTGenerate:",{result});
+    //await call.updatePrompt_tokens(req.session,result.prompt_tokens,result.completion_tokens);
     console.log("adding assistant message...");
-    addMessage(req.session.messageHistory,"assistant",result.response);
-    const response = result.response;
+    addMessage(req.session.messageHistory,"assistant",result);
+    const response = result;
     res.json({ response: response });
   } catch (error) {
     console.error(error);
@@ -54,9 +85,11 @@ app.post('/submit', async (req, res) => {
 });
 
 app.get('/', (req,res) => {
-    //initialize session's message history if it doesn't already exist
-    if (!req.session.messageHistory){
+    //initialize session variables if they don't already exist
+    if (!req.session.initialized){
         req.session.messageHistory = [];
+        req.session.prompt_tokens_total = 0;
+        req.session.initialized = true;
     }
     res.sendFile(path.join(__dirname,'public','index.html'));
 });
