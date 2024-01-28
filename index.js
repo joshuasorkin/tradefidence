@@ -125,7 +125,6 @@ app.get('/', (req,res) => {
                     extractFromMindsDB(data);
                     //console.log({data});
                     addMessage(req.session.messageHistory,"system",data);
-                    console.log(data); // Process and display the data
                     console.log('Session initialized:', req.session);
                     res.sendFile(path.join(__dirname,'public','index.html'));
                 }
