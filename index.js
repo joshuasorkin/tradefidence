@@ -1,16 +1,14 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
-import { Configuration, OpenAIApi } from 'openai';
+import {OpenAI} from 'openai';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// OpenAI configuration
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+const openai = new OpenAI({
+    apiKey:process.env.OPENAI_API_KEY
 });
-const openai = new OpenAIApi(configuration);
 
 // Serve static files from 'public' directory
 app.use(express.static('public'));
