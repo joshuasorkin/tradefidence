@@ -6,7 +6,7 @@ import MongoStore from 'connect-mongo';
 import path from 'path';
 import OpenAI from 'openai';
 import fileUpload from 'express-fileupload';
-app.use(fileUpload());
+
 
 import { fileURLToPath } from 'url';
 
@@ -36,6 +36,7 @@ app.use(session({
     cookie: { secure: false } // Set to true if using HTTPS
   }));
 
+app.use(fileUpload());
 
 
 
