@@ -85,13 +85,19 @@ app.post('/submit', async (req, res) => {
 });
 
 app.get('/', (req,res) => {
-    //initialize session variables if they don't already exist
     if (!req.session.initialized){
         req.session.messageHistory = [];
         req.session.prompt_tokens_total = 0;
         req.session.initialized = true;
+        req.session.save(err => {
+            if (err) {
+                console.error('Session save error:', err);
+            }
+            res.sendFile(path.join(__dirname,'public','index.html'));
+        });
+    } else {
+        res.sendFile(path.join(__dirname,'public','index.html'));
     }
-    res.sendFile(path.join(__dirname,'public','index.html'));
 });
 
 // Start the server
