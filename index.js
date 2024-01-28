@@ -110,7 +110,7 @@ app.get('/', (req,res) => {
                 try{
                     console.log("running getnews");
                     const response = await fetch('https://mindsdb2024.openbb.dev/api/v1/news/world?provider=benzinga&limit=10&display=full&start_date=2024-01-26&sort=created&order=desc&topics=USD');
-                    const data = response.json();
+                    const data = await response.json();
                     console.log({data});
                     addMessage(req.session.messageHistory,"system",data);
                     console.log(data); // Process and display the data
