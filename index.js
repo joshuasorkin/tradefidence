@@ -100,6 +100,23 @@ function extractFromMindsDB(data){
     return concatenatedText;
 }
 
+// Endpoint to handle CSV file submissions
+app.post('/upload-csv', async (req, res) => {
+    if (!req.files || !req.files.file) {
+      return res.status(400).send('No files were uploaded.');
+    }
+  
+    const csvFile = req.files.file;
+  
+    // Convert the uploaded file to a string
+    const csvData = csvFile.data.toString('utf8');
+  
+    // TODO: You might want to process the CSV data, parse it, and do something with it
+    // For example, you could convert it to JSON, store it, or use it as input to your model
+  
+    // Send response back to client
+    res.json({ message: 'CSV processed', data: csvData });
+});
 
 app.get('/', (req,res) => {
 
