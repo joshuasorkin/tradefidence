@@ -37,7 +37,7 @@ app.use(express.static('public'));
 // Body parser middleware to parse JSON bodies
 app.use(express.json());
 
-addMessage(messages,role,message){
+function addMessage(messages,role,message){
     const newElement = {role:role,content:message};
     messages.push(newElement);
 }
