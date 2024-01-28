@@ -68,8 +68,7 @@ app.post('/submit', async (req, res) => {
     //const result = await openAIUtility.chatGPTGenerate(req.session,call,personality);
     response = await openai.chat.completions.create({
         messages: req.session.messageHistory,
-        model: model,
-        max_tokens: maxTokens
+        model: model
     });
     const result = completion.choices[0].message.content;
     console.log("result from chatGPTGenerate:",{result});
