@@ -8,10 +8,6 @@ import OpenAIUtility from './OpenAIUtility.js';
 const app = express();
 const port = process.env.PORT || 3000;
 
-const openai = new OpenAI({
-    apiKey:process.env.OPENAI_API_KEY
-});
-
 // Serve static files from 'public' directory
 app.use(express.static('public'));
 
@@ -22,20 +18,14 @@ app.use(express.json());
 app.post('/submit', async (req, res) => {
   try {
     const { prompt } = req.body;
-    const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "You are a helpful assistant."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-    });
-    res.json({ response: response.data.choices[0].message.content });
+    //generate response to user's prompt
+    const result = await openAIUtility.chatGPTGenerate(call,personality);
+    console.log("result from chatGPTGenerate:",{result});
+    await call.updatePrompt_tokens(result.prompt_tokens,result.completion_tokens);
+    console.log("adding assistant message...");
+    await call.addAssistantMessage(result.response,false,result.completion_tokens);
+    const response = result.response;
+    res.json({ response: response });
   } catch (error) {
     console.error(error);
     res.status(500).send('Error processing your request');
