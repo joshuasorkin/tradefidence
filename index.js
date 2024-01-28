@@ -90,6 +90,7 @@ app.get('/', (req,res) => {
         req.session.messageHistory = [];
         req.session.prompt_tokens_total = 0;
         req.session.initialized = true;
+        console.log('Session initialized:', req.session);
         req.session.save(err => {
             if (err) {
                 console.error('Session save error:', err);
