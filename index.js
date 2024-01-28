@@ -13,10 +13,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-//local file imports
-//import OpenAIUtility from './OpenAIUtility.js';
-
-
 const openai = new OpenAI({
     apiKey:process.env.OPENAI_API_KEY
 });
@@ -123,7 +119,7 @@ app.post('/upload-csv', async (req, res) => {
   });
   
   async function sendPromptToChatGPT(csvData) {
-    const response = await fetch('/submit', {
+    const response = await fetch(process.env.HOST_URL+'/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain', // Update the Content-Type to 'text/plain'
