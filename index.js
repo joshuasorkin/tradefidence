@@ -109,7 +109,13 @@ app.get('/', (req,res) => {
             async function getNews(){ 
                 try{
                     console.log("running getnews");
-                    const response = await fetch('https://mindsdb2024.openbb.dev/api/v1/news/world?provider=benzinga&limit=10&display=full&start_date=2024-01-26&sort=created&order=desc&topics=USD');
+                    const response = await fetch('https://mindsdb2024.openbb.dev/api/v1/economy/cpi?provider=fred&countries=australia&countries=china&units=growth_same&frequency=annual&harmonized=false', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': process.env.MINDSDB_AUTHORIZATION
+                        }
+                    });
                     const data = await response.json();
                     console.log({data});
                     addMessage(req.session.messageHistory,"system",data);
