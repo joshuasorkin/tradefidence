@@ -96,7 +96,7 @@ app.post('/submit', async (req, res) => {
 
 app.get('/', (req,res) => {
 
-    if (!req.session.initialized){
+    //if (!req.session.initialized){
         req.session.regenerate(err => {
             if (err) {
                 console.error('Error regenerating session:', err);
@@ -124,10 +124,10 @@ app.get('/', (req,res) => {
             getNews();
             
         });
-    } else {
-        console.log("existng session");
-        res.sendFile(path.join(__dirname,'public','index.html'));
-    }
+    //} else {
+    //    console.log("existng session");
+    //    res.sendFile(path.join(__dirname,'public','index.html'));
+    //}
 });
 
 // Serve static files from 'public' directory
