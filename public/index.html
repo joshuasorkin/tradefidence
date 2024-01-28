@@ -66,6 +66,7 @@
         chatHistoryContainer.innerHTML += '<p><strong>Assistant:</strong> ' + data.response + '</p>';
         // Clear the prompt textarea
         promptTextarea.value = '';
+        responseContainer.textContent = "";
       } else {
         responseContainer.textContent = "Error getting response.";
       }
