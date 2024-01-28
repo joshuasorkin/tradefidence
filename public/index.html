@@ -11,6 +11,7 @@
   <button id="submitBtn">Submit Prompt</button>
   <input type="file" id="fileInput" accept=".csv" style="display: none;">
   <button id="uploadBtn">Upload CSV</button>
+  <button id="downloadBtn">Download STEP</button>
   <p><strong>Response:</strong></p>
   <p id="response"></p>
   <div id="chat-history" style="background-color: #f3f3f3; margin-bottom: 20px; padding: 10px;">
@@ -81,6 +82,37 @@
         responseContainer.textContent = "Error getting response.";
       }
     });
+
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      const promptTextarea = document.getElementById('prompt');
+      const prompt = promptTextarea.value;
+      
+      // Send the prompt to the server to generate the STEP file
+      const response = await fetch('/download-step', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (response.ok) {
+        // Handle the blob response to download the file
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        // Provide a name for the file
+        a.download = 'chat_output.step';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        alert('Error downloading the STEP file.');
+      }
+    });
+  
   </script>
   
 </body>
