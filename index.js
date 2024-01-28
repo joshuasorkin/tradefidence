@@ -92,6 +92,12 @@ app.post('/submit', async (req, res) => {
   }
 });
 
+function extractFromMindsDB(data){
+    const results = data.results;
+    results.forEach(element => {
+        console.log({element});
+    });
+}
 
 
 app.get('/', (req,res) => {
@@ -117,7 +123,8 @@ app.get('/', (req,res) => {
                         }
                     });
                     const data = await response.json();
-                    console.log({data});
+                    extractFromMindsDB(data);
+                    //console.log({data});
                     addMessage(req.session.messageHistory,"system",data);
                     console.log(data); // Process and display the data
                     console.log('Session initialized:', req.session);
