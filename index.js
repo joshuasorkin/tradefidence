@@ -115,7 +115,7 @@ app.get('/', (req,res) => {
             async function getNews(){ 
                 try{
                     console.log("running getnews");
-                    const response = await fetch('https://mindsdb2024.openbb.dev/api/v1/economy/cpi?provider=fred&countries=australia&countries=china&units=growth_same&frequency=annual&harmonized=false', {
+                    const response = await fetch('https://mindsdb2024.openbb.dev/api/v1/news/world?provider=benzinga&limit=10&display=full&start_date=2024-01-26&sort=created&order=desc&topics=USD', {
                         method: 'GET',
                         headers: {
                             'Accept': 'application/json',
