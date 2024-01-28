@@ -95,7 +95,7 @@ app.post('/submit', async (req, res) => {
 function extractFromMindsDB(data){
     const results = data.results;
     const concatenatedText = results.map(element => element.text).join("");
-    console.log(concatenatedText);
+    return concatenatedText;
 }
 
 
@@ -122,9 +122,8 @@ app.get('/', (req,res) => {
                         }
                     });
                     const data = await response.json();
-                    extractFromMindsDB(data);
-                    //console.log({data});
-                    addMessage(req.session.messageHistory,"system",data);
+                    const text = extractFromMindsDB(data);
+                    addMessage(req.session.messageHistory,"user",text);
                     console.log('Session initialized:', req.session);
                     res.sendFile(path.join(__dirname,'public','index.html'));
                 }
