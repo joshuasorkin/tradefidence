@@ -95,26 +95,33 @@ app.post('/submit', async (req, res) => {
 
 
 app.get('/', (req,res) => {
-    console.log("here?");
+
     if (!req.session.initialized){
-        req.session.messageHistory = [];
-        req.session.prompt_tokens_total = 0;
-        req.session.initialized = true;
-        async function getNews(){ 
-            try{
-            console.log("running getnews");
-            response = await fetch('https://mindsdb2024.openbb.dev/api/v1/news/world?provider=benzinga&limit=10&display=full&start_date=2024-01-26&sort=created&order=desc&topics=USD');
-            const data = response.json();
-            addMessage(req.session.messageHistory,"system",data);
-            console.log(data); // Process and display the data
-            res.sendFile(path.join(__dirname,'public','index.html'));
+        req.session.regenerate(err => {
+            if (err) {
+                console.error('Error regenerating session:', err);
+                return res.status(500).send('Error initializing session');
             }
-            catch(error) {
-            console.error('Error:', error);
+            console.log("not inititialized")
+            req.session.messageHistory = [];
+            req.session.prompt_tokens_total = 0;
+            req.session.initialized = true;
+            async function getNews(){ 
+                try{
+                    console.log("running getnews");
+                    response = await fetch('https://mindsdb2024.openbb.dev/api/v1/news/world?provider=benzinga&limit=10&display=full&start_date=2024-01-26&sort=created&order=desc&topics=USD');
+                    const data = response.json();
+                    addMessage(req.session.messageHistory,"system",data);
+                    console.log(data); // Process and display the data
+                    res.sendFile(path.join(__dirname,'public','index.html'));
+                }
+                catch(error) {
+                console.error('Error:', error);
+                }
             }
-        }
-        getNews();
-        console.log('Session initialized:', req.session);
+            getNews();
+            console.log('Session initialized:', req.session);
+        });
     } else {
         console.log("existng session");
         res.sendFile(path.join(__dirname,'public','index.html'));
