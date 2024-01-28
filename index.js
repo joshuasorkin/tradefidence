@@ -42,8 +42,7 @@ function addMessage(messages,role,message){
     messages.push(newElement);
 }
 
-//todo: bundle both of these session updates into a single operation
-updatePrompt_tokens(session,prompt_tokens,completion_tokens){
+function updatePrompt_tokens(session,prompt_tokens,completion_tokens){
     //based on the prompt_tokens value returned by chatGPT,
     //calculate the token count of user's most recent prompt as:
     //prompt_tokens_mostRecent = prompt_tokens - prompt_tokens_total
