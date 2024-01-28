@@ -94,9 +94,8 @@ app.post('/submit', async (req, res) => {
 
 function extractFromMindsDB(data){
     const results = data.results;
-    results.forEach(element => {
-        console.log({element});
-    });
+    const concatenatedText = results.map(element => element.text).join("");
+    console.log(concatenatedText);
 }
 
 
