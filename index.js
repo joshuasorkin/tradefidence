@@ -31,8 +31,7 @@ app.use(session({
 
 
 
-// Serve static files from 'public' directory
-app.use(express.static('public'));
+
 
 // Body parser middleware to parse JSON bodies
 app.use(express.json());
@@ -101,6 +100,9 @@ app.get('/', (req,res) => {
         res.sendFile(path.join(__dirname,'public','index.html'));
     }
 });
+
+// Serve static files from 'public' directory
+app.use(express.static('public'));
 
 // Start the server
 app.listen(port, () => {
