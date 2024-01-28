@@ -18,6 +18,29 @@
   </div>
 
   <script>
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('/upload-csv', {
+            method: 'POST',
+            body: formData, // No need to set Content-Type header for FormData
+            });
+
+            if (response.ok) {
+            const data = await response.json();
+            // Handle response here (e.g., display it in the chat history)
+            console.log('CSV uploaded and processed:', data);
+            } else {
+            console.error('Error uploading and processing CSV.');
+            }
+        }
+    });
+
     document.getElementById('submitBtn').addEventListener('click', async () => {
       const promptTextarea = document.getElementById('prompt');
       const prompt = promptTextarea.value;
