@@ -64,14 +64,9 @@ function updatePrompt_tokens(session,prompt_tokens,completion_tokens){
     session.prompt_tokens_total = prompt_tokens + completion_tokens;
 }
 
-// Endpoint to handle prompt submissions
-app.post('/submit', async (req, res) => {
-  try {
-    const { prompt } = req.body;
-    console.log("session:",req.session);
-    console.log("messageHistory", req.session.messageHistory);
-    addMessage(req.session.messageHistory,'user',prompt);
-    req.session.save(err => {
+async function submitMessage(session,message){
+    addMessage(session.messageHistory,'user',prompt);
+    session.save(err => {
         if (err) {
             console.error('Session save error:', err);
         }
@@ -79,14 +74,25 @@ app.post('/submit', async (req, res) => {
     //generate response to user's prompt
     //const result = await openAIUtility.chatGPTGenerate(req.session,call,personality);
     const completion = await openai.chat.completions.create({
-        messages: req.session.messageHistory,
+        messages: session.messageHistory,
         model: model
     });
     const result = completion.choices[0].message.content;
     console.log("result from chatGPTGenerate:",{result});
     //await call.updatePrompt_tokens(req.session,result.prompt_tokens,result.completion_tokens);
     console.log("adding assistant message...");
-    addMessage(req.session.messageHistory,"assistant",result);
+    addMessage(session.messageHistory,"assistant",result);
+    return result;
+}
+
+
+// Endpoint to handle prompt submissions
+app.post('/submit', async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    console.log("session:",req.session);
+    console.log("messageHistory", req.session.messageHistory);
+    const result = await submitMessage(req.session,prompt);
     res.json({ response: result });
   } catch (error) {
     console.error(error);
@@ -100,23 +106,39 @@ function extractFromMindsDB(data){
     return concatenatedText;
 }
 
-// Endpoint to handle CSV file submissions
 app.post('/upload-csv', async (req, res) => {
     if (!req.files || !req.files.file) {
       return res.status(400).send('No files were uploaded.');
     }
   
     const csvFile = req.files.file;
-  
-    // Convert the uploaded file to a string
     const csvData = csvFile.data.toString('utf8');
   
-    // TODO: You might want to process the CSV data, parse it, and do something with it
-    // For example, you could convert it to JSON, store it, or use it as input to your model
+    // Directly send the raw CSV data to the ChatGPT model
+    const responseFromChatGPT = await sendPromptToChatGPT(csvData);
   
-    // Send response back to client
-    res.json({ message: 'CSV processed', data: csvData });
-});
+    // Send the response back to the client
+    res.json(responseFromChatGPT);
+  });
+  
+  async function sendPromptToChatGPT(csvData) {
+    const response = await fetch('/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain', // Update the Content-Type to 'text/plain'
+      },
+      body: csvData, // Send the raw CSV data as the request body
+    });
+  
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error('Error sending CSV data to ChatGPT.');
+      return null;
+    }
+  }
+  
 
 app.get('/', (req,res) => {
 
