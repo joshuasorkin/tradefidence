@@ -62,6 +62,7 @@ function updatePrompt_tokens(session,prompt_tokens,completion_tokens){
 app.post('/submit', async (req, res) => {
   try {
     const { prompt } = req.body;
+    console.log("session:",req.session);
     console.log("messageHistory", req.session.messageHistory);
     addMessage(req.session.messageHistory,'user',prompt);
     //generate response to user's prompt
