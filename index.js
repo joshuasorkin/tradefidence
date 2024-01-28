@@ -66,7 +66,7 @@ app.post('/submit', async (req, res) => {
     addMessage(req.session.messageHistory,'user',prompt);
     //generate response to user's prompt
     //const result = await openAIUtility.chatGPTGenerate(req.session,call,personality);
-    const response = await openai.chat.completions.create({
+    const completion = await openai.chat.completions.create({
         messages: req.session.messageHistory,
         model: model
     });
