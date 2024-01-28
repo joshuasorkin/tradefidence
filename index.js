@@ -61,7 +61,7 @@ function updatePrompt_tokens(session,prompt_tokens,completion_tokens){
     session.prompt_tokens_total = prompt_tokens + completion_tokens;
 }
 
-async function submitMessage(session,message){
+async function submitMessage(session,prompt){
     addMessage(session.messageHistory,'user',prompt);
     session.save(err => {
         if (err) {
