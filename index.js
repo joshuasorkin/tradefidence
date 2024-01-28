@@ -7,7 +7,7 @@ import path from 'path';
 import OpenAI from 'openai';
 
 //local file imports
-import OpenAIUtility from './OpenAIUtility.js';
+//import OpenAIUtility from './OpenAIUtility.js';
 
 
 const openai = new OpenAI({
